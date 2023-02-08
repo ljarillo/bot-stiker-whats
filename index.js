@@ -1,7 +1,12 @@
+const dotenv = require('dotenv')
+
 const { Client, MessageMedia } = require('whatsapp-web.js')
 const qrcode = require('qrcode-terminal')
 const axios = require('axios')
 const client = new Client({})
+
+
+dotenv.config()
 
 client.on('qr', qr => {
     qrcode.generate(qr, { small: true })
@@ -19,8 +24,11 @@ client.on('ready', () => {
 client.on('message_create', msg => {
     const command = msg.body.split(' ')[0];
     // Cola seu número onde tem o 84848484, sem o 9
-    const sender = msg.from.includes("75654552") ? msg.to : msg.from
-    if (command === "/figurinha") generateSticker(msg, sender)
+    const sender = msg.from.includes(process.env.PHONE_NUMBER) ? msg.to : msg.from
+    if (command[0] === "/figurinha") generateSticker(msg, sender)
+    if (command.includes("dia")) {
+        msg.reply('Bom dia, tudo certo?');
+    }
 });
 
 client.initialize();
@@ -36,7 +44,6 @@ const generateSticker = async (msg, sender) => {
         }
     } else {
         try {
-
             const url = msg.body.substring(msg.body.indexOf(" ")).trim()
             const { data } = await axios.get(url, { responseType: 'arraybuffer' })
             const returnedB64 = Buffer.from(data).toString('base64');
@@ -47,3 +54,5 @@ const generateSticker = async (msg, sender) => {
         }
     }
 }
+
+
