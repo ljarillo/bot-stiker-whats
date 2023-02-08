@@ -18,6 +18,7 @@ cd bot-stiker-whats
 ```
 npm install
 ```
+4. Configure as variáveis no .env
 
 ## Utilização
 
